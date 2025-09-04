@@ -1,0 +1,6 @@
+<section class="board" *ngIf="board$ | async as board">
+  <app-column *ngFor="let col of board.columns"
+              [title]="col.name"
+              [cards]="col.cards">
+  </app-column>
+</section>

@@ -1,0 +1,7 @@
+<article class="column">
+  <header>{{ title }}</header>
+  <div class="cards">
+    <app-card *ngFor="let c of cards" [title]="c.title"></app-card>
+  </div>
+  <button type="button" class="add">+ Add card</button>
+</article>
