@@ -4,12 +4,19 @@
   border-radius: .375rem;
   padding: .5rem .625rem;
 }
+
 strong {
   display: block;
   margin-bottom: .25rem;
 }
+
 p {
   margin: 0;
-  font-size: 1rem;
-  opacity: 0.9;
+  font-size: 0.8rem;
+  opacity: 0.7;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }

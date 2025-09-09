@@ -4,12 +4,67 @@
   </header>
 
   <div class="cards">
-    <div class="card" *ngFor="let c of cards">
-      <strong>{{ c.title }}</strong>
+    <app-card
+      *ngFor="let c of cards"
+      [title]="c.title"
+      [description]="c.description"
+      (click)="openEditCard(c)"
+      style="cursor: pointer;">
+    </app-card>
+
+    <!-- Interface para adicionar tarefa -->
+    <div class="add-card-form" *ngIf="addingCard">
+      <input
+        type="text"
+        [(ngModel)]="newCardTitle"
+        placeholder="Título da tarefa"
+        class="card-input"
+        (keyup.enter)="confirmAddCard()"
+        (keyup.escape)="cancelAddCard()"
+        #cardInput>
+      <div class="form-buttons">
+        <button (click)="confirmAddCard()" class="btn-confirm">Adicionar</button>
+        <button (click)="cancelAddCard()" class="btn-cancel">Cancelar</button>
+      </div>
     </div>
   </div>
 
   <footer class="foot">
+    <button class="btn" (click)="openAddCard()" *ngIf="!addingCard">Adicionar tarefa</button>|
     <button class="btn danger" (click)="remove()">Remover coluna</button>
   </footer>
 </article>
+
+<!-- Modal -->
+<div class="modal-overlay" *ngIf="editingCard" (click)="cancelEditCard()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h3>Editar Tarefa</h3>
+
+    <div class="form-group">
+      <label for="edit-title">Título:</label>
+      <input
+        id="edit-title"
+        type="text"
+        [(ngModel)]="editCardTitle"
+        class="form-input"
+        (keyup.enter)="confirmEditCard()"
+        (keyup.escape)="cancelEditCard()">
+    </div>
+
+    <div class="form-group">
+      <label for="edit-description">Descrição:</label>
+      <textarea
+        id="edit-description"
+        [(ngModel)]="editCardDescription"
+        class="form-textarea"
+        rows="4"
+        (keyup.escape)="cancelEditCard()">
+      </textarea>
+    </div>
+
+    <div class="modal-buttons">
+      <button (click)="confirmEditCard()" class="btn btn-primary">Salvar</button>
+      <button (click)="cancelEditCard()" class="btn btn-secondary">Cancelar</button>
+    </div>
+  </div>
+</div>
