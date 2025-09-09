@@ -1,7 +1,22 @@
+<div class="board-toolbar">
+  <button class="btn icon" (click)="openAdd()" aria-label="Adicionar coluna">＋</button>
+
+  <div class="add-form" *ngIf="adding">
+    <input class="input"
+           [(ngModel)]="newCol"
+           placeholder="Nome da coluna (ex: Waiting)"
+           (keyup.enter)="confirmAdd()"
+           autofocus>
+    <button class="btn primary" (click)="confirmAdd()">Adicionar</button>
+    <button class="btn" (click)="cancelAdd()">Cancelar</button>
+  </div>
+</div>
+
 <section class="board" *ngIf="board$ | async as board">
   <app-column style="height: 96%"
-              *ngFor="let col of board.columns"
-              [title]="col.name"
-              [cards]="col.cards">
+    *ngFor="let col of board.columns"
+    [title]="col.name"
+    [columnId]="col.id"
+    [cards]="col.cards">
   </app-column>
 </section>

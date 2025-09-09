@@ -1,17 +1,25 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Card as CardCmp } from '../card/card';
+import { KanbanService } from '../kanban';
 import type { Card as CardModel } from '../../core/models';
 
 @Component({
   selector: 'app-column',
   standalone: true,
-  imports: [CommonModule, CardCmp],
+  imports: [CommonModule],
   templateUrl: './column.html',
-  styleUrl: './column.scss'
+  styleUrl: './column.scss',
 })
 export class Column {
   @Input() title = '';
+  @Input() columnId = '';
   @Input() cards: CardModel[] = [];
-}
 
+  private kb = inject(KanbanService);
+
+  remove() {
+    if (confirm(`Remover a coluna "${this.title}"?`)) {
+      this.kb.removeColumn(this.columnId);
+    }
+  }
+}

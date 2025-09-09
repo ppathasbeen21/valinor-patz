@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { of } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Board } from '../core/models';
 
 @Injectable({ providedIn: 'root' })
@@ -21,5 +21,40 @@ export class KanbanService {
     ],
   };
 
-  getBoard$() { return of(this.MOCK); }
+  private boardSubject = new BehaviorSubject<Board>(this.MOCK);
+
+  getBoard$(): Observable<Board> {
+    return this.boardSubject.asObservable();
+  }
+
+  addColumn(name: string): void {
+    const currentBoard = this.boardSubject.value;
+    const maxOrder = Math.max(...currentBoard.columns.map(col => col.order), 0);
+    const newColumnId = `col-${Date.now()}`;
+
+    const newColumn = {
+      id: newColumnId,
+      name: name.trim(),
+      order: maxOrder + 1,
+      cards: []
+    };
+
+    const updatedBoard = {
+      ...currentBoard,
+      columns: [...currentBoard.columns, newColumn]
+    };
+
+    this.boardSubject.next(updatedBoard);
+  }
+
+  removeColumn(columnId: string): void {
+    const currentBoard = this.boardSubject.value;
+
+    const updatedBoard = {
+      ...currentBoard,
+      columns: currentBoard.columns.filter(col => col.id !== columnId)
+    };
+
+    this.boardSubject.next(updatedBoard);
+  }
 }
