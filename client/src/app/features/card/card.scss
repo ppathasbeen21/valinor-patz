@@ -1,8 +1,15 @@
 .card {
-  background: #f7f7f7;
+  background: #f8f4e8;
   border: 1px solid #2a2a2a;
-  border-radius: 6px;
-  padding: 8px 10px;
+  border-radius: .375rem;
+  padding: .5rem .625rem;
 }
-strong { display: block; margin-bottom: 4px; }
-p { margin: 0; font-size: 0.9rem; opacity: 0.9; }
+strong {
+  display: block;
+  margin-bottom: .25rem;
+}
+p {
+  margin: 0;
+  font-size: 1rem;
+  opacity: 0.9;
+}
