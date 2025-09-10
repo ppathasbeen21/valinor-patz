@@ -101,4 +101,46 @@ export class KanbanService {
 
     this.boardSubject.next(updatedBoard);
   }
+
+  moveCard(cardId: string, sourceColumnId: string, targetColumnId: string, newOrder: number): void {
+    const currentBoard = this.boardSubject.value;
+
+    let cardToMove: any = null;
+
+    const updatedBoard = {
+      ...currentBoard,
+      columns: currentBoard.columns.map(col => {
+        if (col.id === sourceColumnId) {
+          const card = col.cards.find(c => c.id === cardId);
+          if (card) cardToMove = card;
+          return {
+            ...col,
+            cards: col.cards
+              .filter(c => c.id !== cardId)
+              .map((card, index) => ({ ...card, order: index + 1 }))
+          };
+        }
+        return col;
+      })
+    };
+
+    if (!cardToMove) return;
+
+    const finalBoard = {
+      ...updatedBoard,
+      columns: updatedBoard.columns.map(col => {
+        if (col.id === targetColumnId) {
+          const newCards = [...col.cards];
+          newCards.splice(newOrder - 1, 0, { ...cardToMove, order: newOrder });
+          return {
+            ...col,
+            cards: newCards.map((card, index) => ({ ...card, order: index + 1 }))
+          };
+        }
+        return col;
+      })
+    };
+
+    this.boardSubject.next(finalBoard);
+  }
 }

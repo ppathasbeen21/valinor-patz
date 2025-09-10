@@ -26,6 +26,10 @@ export class Column {
   editCardTitle = '';
   editCardDescription = '';
 
+  draggedCardId: string | null = null;
+  draggedFromColumn: string | null = null;
+  isDragOver = false;
+
   remove() {
     if (confirm(`Remover a coluna "${this.title}"?`)) {
       this.kb.removeColumn(this.columnId);
@@ -49,7 +53,10 @@ export class Column {
     this.cancelAddCard();
   }
 
-  openEditCard(card: CardModel) {
+  openEditCard(card: CardModel, event?: Event) {
+    if (event) {
+      event.stopPropagation();
+    }
     this.editingCard = card;
     this.editCardTitle = card.title;
     this.editCardDescription = card.description;
@@ -66,5 +73,53 @@ export class Column {
       this.kb.updateCard(this.editingCard.id, this.editCardTitle, this.editCardDescription);
     }
     this.cancelEditCard();
+  }
+
+  onDragStart(event: DragEvent, card: CardModel) {
+    this.draggedCardId = card.id;
+    this.draggedFromColumn = this.columnId;
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', card.id);
+    }
+  }
+
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    this.isDragOver = true;
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'move';
+    }
+  }
+
+  onDragLeave(event: DragEvent) {
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    if (
+      event.clientX < rect.left ||
+      event.clientX > rect.right ||
+      event.clientY < rect.top ||
+      event.clientY > rect.bottom
+    ) {
+      this.isDragOver = false;
+    }
+  }
+
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+    this.isDragOver = false;
+
+    if (this.draggedCardId && this.draggedFromColumn) {
+      const newOrder = this.cards.length + 1;
+      this.kb.moveCard(this.draggedCardId, this.draggedFromColumn, this.columnId, newOrder);
+    }
+
+    this.draggedCardId = null;
+    this.draggedFromColumn = null;
+  }
+
+  onDragEnd() {
+    this.draggedCardId = null;
+    this.draggedFromColumn = null;
+    this.isDragOver = false;
   }
 }

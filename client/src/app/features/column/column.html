@@ -1,4 +1,8 @@
-<article class="column">
+<article class="column"
+         [class.drag-over]="isDragOver"
+         (dragover)="onDragOver($event)"
+         (dragleave)="onDragLeave($event)"
+         (drop)="onDrop($event)">
   <header class="head">
     <span class="title">{{ title }}</span>
   </header>
@@ -8,11 +12,14 @@
       *ngFor="let c of cards"
       [title]="c.title"
       [description]="c.description"
-      (click)="openEditCard(c)"
-      style="cursor: pointer;">
+      [class.dragging]="draggedCardId === c.id"
+      draggable="true"
+      (dragstart)="onDragStart($event, c)"
+      (dragend)="onDragEnd()"
+      (click)="openEditCard(c, $event)"
+      style="cursor: grab;">
     </app-card>
 
-    <!-- Interface para adicionar tarefa -->
     <div class="add-card-form" *ngIf="addingCard">
       <input
         type="text"
@@ -35,7 +42,6 @@
   </footer>
 </article>
 
-<!-- Modal -->
 <div class="modal-overlay" *ngIf="editingCard" (click)="cancelEditCard()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <h3>Editar Tarefa</h3>
